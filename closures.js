@@ -140,13 +140,15 @@ counter = counterFactory(10);
     // Anything that is being returned is made public and can be invoked from outside our lexical scope
 
     return {
-      // Code here.
+      publicMethod: function() {
+        return privateMethod();
+      }
     };
 
   })();
 
 //Uncomment this after you create your public method
-//   module.publicMethod();
+module.publicMethod();
 
 
 
@@ -157,14 +159,15 @@ counter = counterFactory(10);
 
 function timeOutCounter() {
   for (var i = 0; i <= 5; i++) {
-    setTimeout(function() {
-      console.log(i);
-    }, i * 1000)
-  }
+    var currentI = newScope(i);
+    setTimeout(currentI , i * 1000)
+  };
 
-  function newScope(i) {
-    console.log(i)
+  function newScope(x) {
+    return function() {
+      console.log(x)
   }
+}
 }
 timeOutCounter();
   // To make this code work you will need to create a new scope for every iteration.
@@ -175,10 +178,18 @@ timeOutCounter();
 
 //////////////////PROBLEM 8////////////////////
 
-var funcArray = [];
 
-/*
-  Make the following code work
+
+var funcArray = [];
+for(var i = 0; i < 6; i++) {
+  funcArray.push(scope(i));
+  function scope(i) {
+    return function() {
+      return i;
+    }
+  }
+}
+
 
   funcArray[0]() //0
   funcArray[1]() //1
@@ -186,6 +197,3 @@ var funcArray = [];
   funcArray[3]() //3
   funcArray[4]() //4
   funcArray[5]() //5
-
-  *Hint: Don't let this fool you. Break down what's really happening here.
-*/
